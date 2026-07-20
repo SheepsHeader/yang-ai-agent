@@ -1,5 +1,6 @@
 package com.example.yangaiagent.App;
 
+import com.example.yangaiagent.Advisor.MyLoggerAdvisor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -30,7 +31,8 @@ public class LoverCoserApp {
         this.loverChatClient = ChatClient.builder(dashboardChatModel)
                 .defaultSystem(prompt)
                 .defaultAdvisors(
-                        new MessageChatMemoryAdvisor(inMemoryChatMemory)
+                        new MessageChatMemoryAdvisor(inMemoryChatMemory),
+                        new MyLoggerAdvisor()
                 )
                 .build();
     }
