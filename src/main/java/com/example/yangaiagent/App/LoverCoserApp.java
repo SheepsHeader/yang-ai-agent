@@ -71,8 +71,24 @@ public class LoverCoserApp {
                 .call()
                 .chatResponse();
         String content = response.getResult().getOutput().getText();
-        log.info("content: {}", content);
         return content;
+    }
+
+    public LoveReport doChatReturnReport(String message, String chatId) {
+        LoveReport loveReport = loverChatClient
+                .prompt()
+                .user(message)
+                // 设置本次请求的记忆参数
+                // spec 是框架传入的配置对象，通过 param(key, value) 设置参数
+                .advisors(spec -> spec
+                        // 会话唯一标识：区分不同用户的对话记忆
+                        .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        // 历史消息数量：每次调用携带最近10条历史
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                .call()
+                .entity(LoveReport.class);
+        log.info("loveReport: {}", loveReport);
+        return loveReport;
     }
 
 }
