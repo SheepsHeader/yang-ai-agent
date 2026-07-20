@@ -8,6 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 
+/**
+*CommandLineRunner的作用是，在spring boot应用启动完成后，执行run方法，用于初始化应用状态
+ */
 @Component
 public class SpringAiAiInvoke implements CommandLineRunner {
 

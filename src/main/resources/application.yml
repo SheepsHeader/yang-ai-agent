@@ -1,13 +1,8 @@
 spring:
   application:
     name: yang-ai-agent
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-#  profiles:
-#    active: local
+  profiles:
+    active: local
   ai:
     dashscope:
       chat:
