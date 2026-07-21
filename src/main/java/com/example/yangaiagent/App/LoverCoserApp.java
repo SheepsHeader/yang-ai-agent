@@ -1,10 +1,10 @@
 package com.example.yangaiagent.App;
 
 import com.example.yangaiagent.Advisor.MyLoggerAdvisor;
+import com.example.yangaiagent.ChatMemory.MysqlChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.core.io.ClassPathResource;
@@ -24,14 +24,18 @@ public class LoverCoserApp {
 
     private final ChatClient loverChatClient;
 
-    public LoverCoserApp(ChatModel dashboardChatModel) throws IOException {
+    /**
+     * @param dashboardChatModel Spring AI 注入的 ChatModel
+     * @param mysqlChatMemory    自定义 MySQL 持久化的 ChatMemory（替代默认的 InMemoryChatMemory）
+     */
+    public LoverCoserApp(ChatModel dashboardChatModel, MysqlChatMemory mysqlChatMemory) throws IOException {
         ClassPathResource resource = new ClassPathResource("prompt/LoverCoser-prompt");
-        String prompt = StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
-        InMemoryChatMemory inMemoryChatMemory = new InMemoryChatMemory();
+        String prompt = StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);;
         this.loverChatClient = ChatClient.builder(dashboardChatModel)
                 .defaultSystem(prompt)
                 .defaultAdvisors(
-                        new MessageChatMemoryAdvisor(inMemoryChatMemory),
+                        // 使用 MySQL 持久化的 ChatMemory，服务重启后对话历史不丢失
+                        new MessageChatMemoryAdvisor(mysqlChatMemory),
                         new MyLoggerAdvisor()
                 )
                 .build();
