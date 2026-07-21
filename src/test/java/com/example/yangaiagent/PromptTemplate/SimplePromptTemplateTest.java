@@ -14,6 +14,10 @@ import java.util.Map;
  * 打印结果就结束。没有断言的测试永远不会失败，等于没有测。
  */
 
+/**
+ * 这里是通用模版测试类，对于不同的类型还会存在不同专用模版，比如SystemPromptTemplate
+ */
+
 @Slf4j
 public class SimplePromptTemplateTest {
 
