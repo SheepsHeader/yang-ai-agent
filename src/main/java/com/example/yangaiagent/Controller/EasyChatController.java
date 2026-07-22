@@ -48,5 +48,10 @@ public class EasyChatController {
         return loverCoserApp.doChat(message, chatId);
     }
 
+    @GetMapping("/chat/loverRag")
+    public String chatLoverRag(String message, String chatId) {
+        return loverCoserApp.doChatWithRag(message, chatId);
+    }
+
 
 }

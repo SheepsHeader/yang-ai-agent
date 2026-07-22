@@ -2,11 +2,14 @@ package com.example.yangaiagent.App;
 
 import com.example.yangaiagent.Advisor.MyLoggerAdvisor;
 import com.example.yangaiagent.ChatMemory.MysqlChatMemory;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
@@ -23,6 +26,9 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public class LoverCoserApp {
 
     private final ChatClient loverChatClient;
+
+    @Resource
+    private VectorStore loveStoreSimpleVectorStore;
 
     /**
      * @param dashboardChatModel Spring AI 注入的 ChatModel
@@ -93,6 +99,28 @@ public class LoverCoserApp {
                 .entity(LoveReport.class);
         log.info("loveReport: {}", loveReport);
         return loveReport;
+    }
+
+    public String doChatWithRag(String message, String chatId) {
+        ChatResponse response = loverChatClient
+                .prompt()
+                .user(message)
+                // 设置本次请求的记忆参数
+                // spec 是框架传入的配置对象，通过 param(key, value) 设置参数
+                .advisors(spec -> spec
+                        // 会话唯一标识：区分不同用户的对话记忆
+                        .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        // 历史消息数量：每次调用携带最近10条历史
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                .advisors(new MyLoggerAdvisor())
+                .advisors(new QuestionAnswerAdvisor(loveStoreSimpleVectorStore))
+                .call()
+                .chatResponse();
+        String content = null;
+        if (response != null) {
+            content = response.getResult().getOutput().getText();
+        }
+        return content;
     }
 
 }
