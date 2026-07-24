@@ -1,3 +1,5 @@
 1.SpringAI + RAG云知识库
 2.SpringAl通过Advisor特性提供了开箱即用的RAG功能。主要是QuestionAnswerAdvisor问答拦截器和RetrievalAugmentationAdvisor检索增强拦截器,前者更简单易
   用、后者更灵活强大。（后者待实践）
+3.项目解耦设计模式式开发
+4.敏捷开发式项目改造

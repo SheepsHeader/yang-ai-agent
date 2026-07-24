@@ -8,6 +8,13 @@ spring:
       chat:
         options:
           model: qwen-flash
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        dimensions: 1536
+        distance-type: COSINE_DISTANCE
+        max-document-batch-size: 10000
+  # MySQL 主数据源（业务数据 + MyBatis）
   datasource:
     url: jdbc:mysql://localhost:3307/yang_ai_agent?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
     username: root
@@ -19,6 +26,15 @@ spring:
     configuration:
       map-underscore-to-camel-case: true
       cache-enabled: false
+
+# PgVector 独立 PostgreSQL 数据源
+pgvector:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/yu_ai_agent
+    username: postgresql
+    password: password
+    driver-class-name: org.postgresql.Driver
+
 server:
   port: 8123
   servlet:
